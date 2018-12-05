@@ -21,7 +21,7 @@ variable "key_pair" {
 
 variable "domain" {
   description = "The domain of the cluster."
-  default     = "local"
+  default     = "cluster.local"
 }
 
 variable "datacenter" {
