@@ -119,6 +119,7 @@ function create_k8s_install_paths {
   sudo chmod +x /etc/profile.d/k8s_path.sh
   for i in kubeadm-init \
                kubeadm-init-lock \
+               regenerate-bootstrap-token \
                postsetup \
                postsetup-lock \
                etcd-get-certs \
@@ -241,6 +242,7 @@ function setup_systemd {
     sudo cp "$SCRIPT_DIR/kubelet.service" "/etc/systemd/system/"
     sudo cp "$SCRIPT_DIR/customruncmd.service" "/etc/systemd/system/"
     sudo cp "$SCRIPT_DIR/k8s-init.service" "/etc/systemd/system/"
+    sudo cp "$SCRIPT_DIR/regenerate-bootstrap-token.service" "/etc/systemd/system/"
     sudo cp "$SCRIPT_DIR/10-eth0.network" "/etc/systemd/network/"
 
     if systemctl list-unit-files --all | grep -q networking.service; then
