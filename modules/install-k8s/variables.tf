@@ -40,12 +40,12 @@ variable "k8s_version" {
 
 variable "calico_node_version" {
   description = "The version of calico_node to install with the post installation script if `post_install_module` is set to true"
-  default     = "3.3.1"
+  default     = "3.3.2"
 }
 
 variable "calico_cni_version" {
   description = "The version of calico_cni to install with the post installation script if `post_install_module` is set to true"
-  default     = "3.3.1"
+  default     = "3.3.2"
 }
 
 variable "flannel_version" {
