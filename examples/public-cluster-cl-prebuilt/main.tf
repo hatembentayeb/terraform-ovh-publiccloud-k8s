@@ -1,12 +1,11 @@
 provider "openstack" {
-  version   = "~> 1.5.0"
-  region    = "${var.region}"
+  version = "~> 1.5.0"
+  region  = "${var.region}"
 }
-
 
 data "http" "myip" {
   count = "${var.remote_ip_prefix == "" ? 1 : 0}"
-  url = "https://api.ipify.org/"
+  url   = "https://api.ipify.org/"
 }
 
 data "template_file" "custom" {
@@ -36,11 +35,11 @@ module "k8s" {
   key_pair               = "${var.key_pair}"
   ssh_authorized_keys    = ["${file(var.public_sshkey == "" ? "/dev/null" : var.public_sshkey)}"]
   associate_public_ipv4  = true
-  associate_private_ipv4 = false
+  calico_mode            = "${var.calico_mode}"
 
   additional_write_files = [
     "- path: /tmp/bar\n  mode: 0644\n  content: |\n    foo",
-    "${data.template_file.custom.rendered}"
+    "${data.template_file.custom.rendered}",
   ]
 }
 

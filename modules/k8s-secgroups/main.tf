@@ -302,7 +302,7 @@ resource "openstack_networking_secgroup_rule_v2" "kubelet-read-worker_master" {
 }
 
 resource "openstack_networking_secgroup_rule_v2" "calico-bgp_master_master" {
-  count             = "${var.calico_bgp? 1 : 0}"
+  count             = "${var.apply_module && var.calico? 1 : 0}"
   direction         = "ingress"
   ethertype         = "IPv4"
   protocol          = "tcp"
@@ -313,7 +313,7 @@ resource "openstack_networking_secgroup_rule_v2" "calico-bgp_master_master" {
 }
 
 resource "openstack_networking_secgroup_rule_v2" "calico-bgp_worker_worker" {
-  count             = "${var.apply_module && var.calico_bgp? 1 : 0}"
+  count             = "${var.apply_module && var.calico? 1 : 0}"
   direction         = "ingress"
   ethertype         = "IPv4"
   protocol          = "tcp"
@@ -324,7 +324,7 @@ resource "openstack_networking_secgroup_rule_v2" "calico-bgp_worker_worker" {
 }
 
 resource "openstack_networking_secgroup_rule_v2" "calico-bgp_master_worker" {
-  count             = "${var.apply_module && var.calico_bgp? 1 : 0}"
+  count             = "${var.apply_module && var.calico? 1 : 0}"
   direction         = "ingress"
   ethertype         = "IPv4"
   protocol          = "tcp"
@@ -335,7 +335,7 @@ resource "openstack_networking_secgroup_rule_v2" "calico-bgp_master_worker" {
 }
 
 resource "openstack_networking_secgroup_rule_v2" "calico-bgp_worker_master" {
-  count             = "${var.apply_module && var.calico_bgp? 1 : 0}"
+  count             = "${var.apply_module && var.calico? 1 : 0}"
   direction         = "ingress"
   ethertype         = "IPv4"
   protocol          = "tcp"
@@ -357,7 +357,7 @@ resource "openstack_networking_secgroup_rule_v2" "apps_worker_worker" {
 }
 
 resource "openstack_networking_secgroup_rule_v2" "ipip_master_master" {
-  count             = "${var.apply_module && var.canal? 1 : 0}"
+  count             = "${var.apply_module && (var.canal || var.calico ) ? 1 : 0}"
   direction         = "ingress"
   ethertype         = "IPv4"
   protocol          = "4"
@@ -366,7 +366,7 @@ resource "openstack_networking_secgroup_rule_v2" "ipip_master_master" {
 }
 
 resource "openstack_networking_secgroup_rule_v2" "ipip_worker_worker" {
-  count             = "${var.apply_module && var.canal? 1 : 0}"
+  count             = "${var.apply_module && (var.canal || var.calico ) ? 1 : 0}"
   direction         = "ingress"
   ethertype         = "IPv4"
   protocol          = "4"
@@ -375,7 +375,7 @@ resource "openstack_networking_secgroup_rule_v2" "ipip_worker_worker" {
 }
 
 resource "openstack_networking_secgroup_rule_v2" "ipip_master_worker" {
-  count             = "${var.apply_module && var.canal? 1 : 0}"
+  count             = "${var.apply_module && (var.canal || var.calico ) ? 1 : 0}"
   direction         = "ingress"
   ethertype         = "IPv4"
   protocol          = "4"
@@ -384,7 +384,7 @@ resource "openstack_networking_secgroup_rule_v2" "ipip_master_worker" {
 }
 
 resource "openstack_networking_secgroup_rule_v2" "ipip_worker_master" {
-  count             = "${var.apply_module && var.canal? 1 : 0}"
+  count             = "${var.apply_module && (var.canal || var.calico ) ? 1 : 0}"
   direction         = "ingress"
   ethertype         = "IPv4"
   protocol          = "4"
@@ -393,7 +393,7 @@ resource "openstack_networking_secgroup_rule_v2" "ipip_worker_master" {
 }
 
 resource "openstack_networking_secgroup_rule_v2" "ipip-legacy_master_master" {
-  count             = "${var.apply_module && var.canal? 1 : 0}"
+  count             = "${var.apply_module && (var.canal || var.calico ) ? 1 : 0}"
   direction         = "ingress"
   ethertype         = "IPv4"
   protocol          = "94"
@@ -402,7 +402,7 @@ resource "openstack_networking_secgroup_rule_v2" "ipip-legacy_master_master" {
 }
 
 resource "openstack_networking_secgroup_rule_v2" "ipip-legacy_worker_worker" {
-  count             = "${var.apply_module && var.canal? 1 : 0}"
+  count             = "${var.apply_module && (var.canal || var.calico ) ? 1 : 0}"
   direction         = "ingress"
   ethertype         = "IPv4"
   protocol          = "94"
@@ -411,7 +411,7 @@ resource "openstack_networking_secgroup_rule_v2" "ipip-legacy_worker_worker" {
 }
 
 resource "openstack_networking_secgroup_rule_v2" "ipip-legacy_master_worker" {
-  count             = "${var.apply_module && var.canal? 1 : 0}"
+  count             = "${var.apply_module && (var.canal || var.calico ) ? 1 : 0}"
   direction         = "ingress"
   ethertype         = "IPv4"
   protocol          = "94"
@@ -420,7 +420,7 @@ resource "openstack_networking_secgroup_rule_v2" "ipip-legacy_master_worker" {
 }
 
 resource "openstack_networking_secgroup_rule_v2" "ipip-legacy_worker_master" {
-  count             = "${var.apply_module && var.canal? 1 : 0}"
+  count             = "${var.apply_module && (var.canal || var.calico ) ? 1 : 0}"
   direction         = "ingress"
   ethertype         = "IPv4"
   protocol          = "94"

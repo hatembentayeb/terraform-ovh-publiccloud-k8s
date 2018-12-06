@@ -25,12 +25,15 @@ Environment=BOOTSTRAP_TOKEN_ETCD_KEY=k8s/bootstrap-token
 Environment=PKI_ETCD_KEY=k8s/pki
 Environment=MASTERS_ETCD_KEYPREFIX=k8s/masters
 Environment=INIT_ETCD_LOCK=k8s/init-lock
+Environment=CALICO_MODE=canal
 
 Environment=POD_MANIFEST_PATH=/etc/kubernetes/manifests
 Environment=CLUSTER_DOMAIN=cluster.local
 Environment=UPSTREAM_RESOLVER=213.186.33.99:53
-Environment=NETWORKING_SERVICE_SUBNET=192.168.0.0/16
-Environment=NETWORKING_POD_SUBNET=10.0.0.0/16
+Environment=NETWORKING_SERVICE_SUBNET=10.96.0.0/12
+Environment=NETWORKING_POD_SUBNET=192.168.0.0/16
+Environment=HOST_CIDR=
+Environment=IP_AUTODETECTION_METHOD=
 Environment=API_SERVER_CERT_SANS=127.0.0.1
 Environment=KUBERNETES_VERSION=1.12.3
 Environment=KUBEPROXY_CONFIG_MODE=iptables

@@ -135,7 +135,7 @@ variable "host_cidr" {
 variable "pod_cidr" {
   description = "CIDR IPv4 range to assign Kubernetes pods"
   type        = "string"
-  default     = "10.2.0.0/16"
+  default     = "192.168.0.0/16"
 }
 
 variable "service_cidr" {
@@ -145,7 +145,7 @@ The 1st IP will be reserved for kube_apiserver, the 10th IP will be reserved for
 EOD
 
   type    = "string"
-  default = "10.3.0.0/16"
+  default = "10.96.0.0/12"
 }
 
 variable "upstream_resolver" {
@@ -309,4 +309,10 @@ variable "additional_write_files" {
   type        = "list"
   description = "A list of additional cloud init write_files"
   default     = []
+}
+
+variable "calico_mode" {
+  description = "defines calico cni mode. either canal(default) or calico"
+  type        = "string"
+  default     = "canal"
 }

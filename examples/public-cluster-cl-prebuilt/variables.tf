@@ -41,3 +41,9 @@ variable "remote_ip_prefix" {
   description = "The remote IPv4 prefix used to filter kubernetes API and ssh remote traffic. If left blank, the public NATed IPv4 of the user will be used."
   default     = ""
 }
+
+variable "calico_mode" {
+  description = "defines calico cni mode. either canal(default) or calico"
+  type        = "string"
+  default     = "canal"
+}

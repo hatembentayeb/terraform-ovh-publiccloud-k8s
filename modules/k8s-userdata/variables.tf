@@ -13,6 +13,12 @@ variable "name" {
   description = "Cluster name"
 }
 
+variable "calico_mode" {
+  description = "defines calico cni mode. either canal(default) or calico"
+  type        = "string"
+  default     = "canal"
+}
+
 variable "domain" {
   description = "The domain of the cluster."
   default     = "cluster.local"
@@ -95,7 +101,7 @@ variable "volume_plugin_dir" {
 variable "pod_cidr" {
   description = "CIDR IPv4 range to assign Kubernetes pods"
   type        = "string"
-  default     = "10.0.0.0/16"
+  default     = "192.168.0.0/16"
 }
 
 variable "service_cidr" {
@@ -105,7 +111,7 @@ The 1st IP will be reserved for kube_apiserver, the 10th IP will be reserved for
 EOD
 
   type    = "string"
-  default = "192.168.0.0/16"
+  default = "10.96.0.0/12"
 }
 
 variable "cacert" {

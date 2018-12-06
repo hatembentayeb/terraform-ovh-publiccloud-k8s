@@ -36,6 +36,8 @@ module "secgroups" {
   etcd         = "${var.etcd}"
   cfssl        = "${var.cfssl}"
   cfssl_port   = "${var.cfssl_port}"
+  canal        = "${var.calico_mode == "canal"}"
+  calico       = "${var.calico_mode == "calico"}"
 }
 
 resource "openstack_networking_port_v2" "public_port_k8s" {
@@ -114,6 +116,7 @@ module "userdata" {
   cfssl_key_size       = "${var.cfssl_key_size}"
   cfssl_bind           = "${var.cfssl_bind}"
   cfssl_port           = "${var.cfssl_port}"
+  calico_mode          = "${var.calico_mode}"
 
   # k8s variables to join existing cluster
   api_endpoint    = "${var.api_endpoint}"
