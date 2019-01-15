@@ -70,6 +70,25 @@
                 "commit": "{{user `commit`}}",
                 "community": "ovh"
             }
+        },
+        {
+            "name": "ubuntu1804",
+            "type": "openstack",
+            "identity_endpoint": "{{user `identity_endpoint`}}",
+            "region": "{{user `region`}}",
+            "ssh_username": "ubuntu",
+            "image_name": "{{user `image_name`}}",
+            "source_image_name": "Ubuntu 18.04",
+            "ssh_ip_version": "4",
+            "flavor": "{{user `flavor_name`}}",
+            "networks": [
+                "{{user `ext_net_id`}}"
+            ],
+            "metadata": {
+                "tag": "{{user `tag`}}",
+                "commit": "{{user `commit`}}",
+                "community": "ovh"
+            }
         }
     ],
     "provisioners": [
