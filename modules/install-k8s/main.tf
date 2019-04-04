@@ -6,10 +6,10 @@ resource "null_resource" "post_install_k8s" {
   }
 
   connection {
-    host                = "${element(var.ipv4_addrs, count.index)}"
-    user                = "${var.ssh_user}"
-    bastion_host        = "${var.ssh_bastion_host}"
-    bastion_user        = "${var.ssh_bastion_user}"
+    host         = "${element(var.ipv4_addrs, count.index)}"
+    user         = "${var.ssh_user}"
+    bastion_host = "${var.ssh_bastion_host}"
+    bastion_user = "${var.ssh_bastion_user}"
   }
 
   provisioner "remote-exec" {
@@ -23,7 +23,7 @@ resource "null_resource" "post_install_k8s" {
 
   provisioner "remote-exec" {
     inline = <<EOF
-/bin/sh /tmp/install-k8s/install-k8s \
+/bin/bash /tmp/install-k8s/install-k8s \
   --k8s-version ${var.k8s_version} \
   --calico-node-version ${var.calico_node_version} \
   --calico-cni-version ${var.calico_cni_version} \

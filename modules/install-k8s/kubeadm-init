@@ -23,12 +23,13 @@ systemctl stop kubelet
 export PATH=$PATH:/opt/k8s/bin
 
 echo "Cleanup kubeadm files from a previous init" >&2
+suffix="$(date '+%s').bak"
 for i in "${POD_MANIFEST_PATH}" \
              /etc/kubernetes/kubelet.conf \
              /etc/kubernetes/pki \
              /etc/kubernetes/bootstrap-kubelet.conf; do
     if [ -f "$i" ] || [ -d "$i" ]; then
-        mv -v -- "${i}" "${i}.bak"
+        mv -v -- "${i}" "${i}-${suffix}"
     fi
 done
 
@@ -83,6 +84,10 @@ else
     fi
 
     echo "Joining the cluster as worker on endpoint $JOIN" >&2
+    # kubeadm join 192.168.0.200:6443 \
+        # --token 9vr73a.a8uxyaju799qwdjv \
+        # --discovery-token-ca-cert-hash sha256:7c2e69131a36ae2a042a339b33381c6d0d43887e2de83720eff5359e26aec866
+
     /opt/k8s/bin/kubeadm join \
                          --discovery-token-ca-cert-hash "$CACRT_SHA256SUM" \
                          --token "$TOKEN" \

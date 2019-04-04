@@ -47,7 +47,12 @@ fi
 # Untaint node if needed
 if [ "$WORKER_MODE" == "1" ]; then
   echo "untainting $(hostname) master node" >&2
-  $KUBECTL taint nodes $(hostname) node-role.kubernetes.io/master-
+  if [ "$WORKER_MODE" == "1" ]; then
+      echo "untainting $(hostname) master node" >&2
+      if [ "$($KUBECTL get -o json nodes/$(hostname) | jq -r '.spec.taints[].key | select(. == "node-role.kubernetes.io/master")')" == "node-role.kubernetes.io/master" ]; then
+          $KUBECTL taint nodes $(hostname) node-role.kubernetes.io/master-
+      fi
+  fi
 fi
 
 echo "Registering master into etcd." >&2
