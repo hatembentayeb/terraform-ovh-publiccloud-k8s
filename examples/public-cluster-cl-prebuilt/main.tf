@@ -19,17 +19,6 @@ data "template_file" "custom" {
 EOF
 }
 
-data "template_file" "custom" {
-  template = <<EOF
-- path: /etc/systemd/system/customruncmd.service.d/run.conf
-  mode: 0644
-  content: |
-    [Service]
-    ExecStart=
-    ExecStart=/bin/sh -c 'echo bar | tee -a /tmp/foo'
-EOF
-}
-
 module "k8s" {
   source                 = "../.."
   region                 = "${var.region}"
@@ -52,7 +41,7 @@ module "k8s" {
   additional_write_files = [
     "- path: /tmp/bar\n  mode: 0644\n  content: |\n    foo",
     "${data.template_file.custom.rendered}",
-
+  ]
 }
 
 resource "openstack_networking_secgroup_rule_v2" "in_traffic_k8s_sg" {
