@@ -37,6 +37,10 @@ EOF
   }
 
   provisioner "remote-exec" {
+    inline = "echo start customruncmd; sudo systemctl start customruncmd.service || true"
+  }
+
+  provisioner "remote-exec" {
     inline = "echo start k8s; sudo systemctl restart k8s-init.service || true"
   }
 

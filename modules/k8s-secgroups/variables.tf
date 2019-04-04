@@ -22,14 +22,14 @@ variable "flannel_vxlan" {
  default     = false
 }
 
-variable "calico_bgp" {
+variable "calico" {
  description = "allow calico with bgp backend"
  default     = false
 }
 
 variable "canal" {
  description = "allow canal networking (calico+flannel). Defaults to `true`"
- default     = true
+ default     = false
 }
 
 variable "etcd" {

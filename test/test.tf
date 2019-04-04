@@ -50,7 +50,7 @@ spec:
     spec:
       containers:
         - name: busybox
-          image: busybox
+          image: busybox:1.28
           args:
              - sleep
              - "1000000"
@@ -67,13 +67,30 @@ else
 fi
 
 IPS=$($K8S_CMD get pods -o json | jq -r '.items[].status.podIP')
-# ping all containers from first one
+echo ping all containers from first one >&2
 for i in $IPS; do
    if ! ($K8S_CMD exec $(echo $PODS | awk '{print $1}') -- ping -c 1 $i >/dev/null); then
      echo pods cannot ping one another. networking maybe down. >&2
    fi
 done
+
+echo ping all containers from first one based on dns names >&2
+for i in $IPS; do
+   if ! ($K8S_CMD exec $(echo $PODS | awk '{print $1}') -- ping -c 1 $${iexpr}.default.pod.cluster.local >/dev/null); then
+     echo pods cannot ping one another based on dns resolution. problem with coredns setup. >&2
+   fi
+done
+
+echo ping ovh.com to test dns upstream resolution >&2
+if ! ($K8S_CMD exec $(echo $PODS | awk '{print $1}') -- ping -c 1 ovh.com >/dev/null); then
+  echo pods cannot ping ovh.com. networking maybe down. problem with coredns setup >&2
+fi
 TPL
+
+  vars {
+    # hack to double escape the bash interpolation string
+    iexpr = "$${i//./-}"
+  }
 }
 
 ### this is the tests run by the CI

@@ -1,0 +1,16 @@
+[Unit]
+Description=regenerate-bootstrap-token runs kubeadm create token and put it into etcd
+
+[Service]  
+Type=oneshot
+
+Environment=MASTER_MODE=0
+Environment=ETCD_ENDPOINTS=https://127.0.0.1:2379
+Environment=ETCD_CA_FILE=/etc/kubernetes/etcd/ca.crt
+Environment=ETCD_CERT_FILE=/etc/kubernetes/etcd/client.crt
+Environment=ETCD_KEY_FILE=/etc/kubernetes/etcd/client.key
+Environment=BOOTSTRAP_TOKEN_ETCD_KEY=k8s/bootstrap-token
+
+EnvironmentFile=/etc/sysconfig/kubernetes.conf
+
+ExecStart=/opt/k8s/bin/regenerate-bootstrap-token

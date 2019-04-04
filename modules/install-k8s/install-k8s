@@ -9,8 +9,8 @@ readonly SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 readonly SCRIPT_NAME="$(basename "$0")"
 
 readonly DEFAULT_K8S_VERSION="1.12.3"
-readonly DEFAULT_CALICO_NODE_VERSION="3.3.1"
-readonly DEFAULT_CALICO_CNI_VERSION="3.3.1"
+readonly DEFAULT_CALICO_NODE_VERSION="3.3.2"
+readonly DEFAULT_CALICO_CNI_VERSION="3.3.2"
 readonly DEFAULT_FLANNEL_VERSION="0.9.1"
 readonly DEFAULT_ETCD_VERSION="3.3.9"
 readonly DEFAULT_CRICTL_VERSION="1.12.0"
@@ -21,6 +21,8 @@ readonly DEFAULT_K8S_SHA1SUM_KUBECTL="4248b9e621af7e902c9d23bf772a2ee8e50146c5"
 readonly DEFAULT_K8S_SHA1SUM_KUBEADM="24d78afbd6bb3dc90cd048a1925eccc7cb4b05db"
 readonly DEFAULT_SHA256SUM_ETCD="7b95bdc6dfd1d805f650ea8f886fdae6e7322f886a8e9d1b0d14603767d053b1"
 readonly DEFAULT_SHA1SUM_CRICTL="45a9c65cc52a13e76e07fbc64ddcf3b646cd8c82"
+readonly DEFAULT_DOCKER_VERSION="18.03"
+
 
 function print_usage {
   echo
@@ -83,12 +85,12 @@ function install_dependencies {
       # curl to download or interact with apis,
       # docker to run kubernetes infra # Not tested
       sudo yum install -y \
-           docker \
            socat \
            systemd-networkd \
            systemd-resolved \
            ebtables \
            rng-tools
+      export VERSION=${DEFAULT_DOCKER_VERSION} && curl -sSL get.docker.com | sudo -E sh
       sudo usermod -aG docker centos
   elif [ -n "$(command -v apt-get)" ] && [ -n "$(command -v ubuntu-bug)" ]; then
       log_info "Ubuntu based. upgrading system and installing docker"
@@ -97,10 +99,10 @@ function install_dependencies {
       sudo -E apt update -y -q
       sudo -E apt install --no-install-recommends -q -y \
            jq \
-           docker.io \
            socat \
            ebtables \
            rng-tools
+      export VERSION=${DEFAULT_DOCKER_VERSION} && curl -sSL get.docker.com | sudo -E sh
       sudo usermod -aG docker ubuntu
   elif [ -n "$(command -v coreos-install)" ]; then
       log_info "Nothing to do for coreos"
@@ -119,6 +121,7 @@ function create_k8s_install_paths {
   sudo chmod +x /etc/profile.d/k8s_path.sh
   for i in kubeadm-init \
                kubeadm-init-lock \
+               regenerate-bootstrap-token \
                postsetup \
                postsetup-lock \
                etcd-get-certs \
@@ -241,6 +244,7 @@ function setup_systemd {
     sudo cp "$SCRIPT_DIR/kubelet.service" "/etc/systemd/system/"
     sudo cp "$SCRIPT_DIR/customruncmd.service" "/etc/systemd/system/"
     sudo cp "$SCRIPT_DIR/k8s-init.service" "/etc/systemd/system/"
+    sudo cp "$SCRIPT_DIR/regenerate-bootstrap-token.service" "/etc/systemd/system/"
     sudo cp "$SCRIPT_DIR/10-eth0.network" "/etc/systemd/network/"
 
     if systemctl list-unit-files --all | grep -q networking.service; then

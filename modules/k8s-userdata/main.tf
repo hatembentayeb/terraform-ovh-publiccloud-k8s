@@ -26,7 +26,7 @@ module "cfssl" {
 
 module "etcd" {
   source               = "ovh/publiccloud-etcd/ovh//modules/etcd-userdata"
-  version              = "0.1.9"
+  version              = "0.1.10"
   count                = "${var.count}"
   name                 = "${var.name}"
   domain               = "${var.domain}"
@@ -45,6 +45,7 @@ API_ENDPOINT=${var.api_endpoint}
 CFSSL_ENDPOINT=${var.cfssl_endpoint == "" ? (var.cfssl ? module.cfssl.endpoint : "") : var.cfssl_endpoint}
 CLUSTER_DNS=${local.cluster_dns}
 CLUSTER_DOMAIN=${var.domain}
+CALICO_MODE=${var.calico_mode}
 UPSTREAM_RESOLVER=${var.upstream_resolver}
 NETWORKING_SERVICE_SUBNET=${var.service_cidr}
 NETWORKING_POD_SUBNET=${var.pod_cidr}
@@ -52,6 +53,7 @@ API_SERVER_CERT_SANS=${join(",", concat(var.private_ipv4_addrs,var.public_ipv4_a
 TAINTS=${join(",", var.taints)}
 MASTER_MODE=${var.master_mode}
 WORKER_MODE=${var.worker_mode}
+HOST_CIDR=${var.host_cidr}
 KUBEPROXY_CONFIG_MODE=iptables
 AUTHORIZATION_MODES=Node,RBAC
 BOOTSTRAP_TOKEN=${var.bootstrap_token}
