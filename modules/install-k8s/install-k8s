@@ -8,20 +8,20 @@ readonly DEFAULT_INSTALL_PATH="/opt/k8s"
 readonly SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 readonly SCRIPT_NAME="$(basename "$0")"
 
-readonly DEFAULT_K8S_VERSION="1.12.3"
-readonly DEFAULT_CALICO_NODE_VERSION="3.3.2"
-readonly DEFAULT_CALICO_CNI_VERSION="3.3.2"
-readonly DEFAULT_FLANNEL_VERSION="0.9.1"
-readonly DEFAULT_ETCD_VERSION="3.3.9"
-readonly DEFAULT_CRICTL_VERSION="1.12.0"
-readonly DEFAULT_K8S_CNI_PLUGINS_VERSION="0.7.1"
-readonly DEFAULT_K8S_SHA1SUM_CNI_PLUGINS="fb29e20401d3e9598a1d8e8d7992970a36de5e05"
-readonly DEFAULT_K8S_SHA1SUM_KUBELET="7dfe9b7665a4e60feafbc320dcec39833e41837b"
-readonly DEFAULT_K8S_SHA1SUM_KUBECTL="4248b9e621af7e902c9d23bf772a2ee8e50146c5"
-readonly DEFAULT_K8S_SHA1SUM_KUBEADM="24d78afbd6bb3dc90cd048a1925eccc7cb4b05db"
-readonly DEFAULT_SHA256SUM_ETCD="7b95bdc6dfd1d805f650ea8f886fdae6e7322f886a8e9d1b0d14603767d053b1"
-readonly DEFAULT_SHA1SUM_CRICTL="45a9c65cc52a13e76e07fbc64ddcf3b646cd8c82"
-readonly DEFAULT_DOCKER_VERSION="18.03"
+readonly DEFAULT_K8S_VERSION="1.14.0"
+readonly DEFAULT_CALICO_NODE_VERSION="3.6.1"
+readonly DEFAULT_CALICO_CNI_VERSION="3.6.1"
+readonly DEFAULT_FLANNEL_VERSION="0.11.0"
+readonly DEFAULT_ETCD_VERSION="3.3.12"
+readonly DEFAULT_CRICTL_VERSION="1.14.0"
+readonly DEFAULT_K8S_CNI_PLUGINS_VERSION="0.7.5"
+readonly DEFAULT_K8S_SHA1SUM_CNI_PLUGINS="52e9d2de8a5f927307d9397308735658ee44ab8d"
+readonly DEFAULT_K8S_SHA1SUM_KUBELET="c3b736fd0f003765c12d99f2c995a8369e6241f4"
+readonly DEFAULT_K8S_SHA1SUM_KUBECTL="7e3a3ea663153f900cbd52900a39c91fa9f334be"
+readonly DEFAULT_K8S_SHA1SUM_KUBEADM="774a2660a841c7a01a6b28aa914aee93eed021c4"
+readonly DEFAULT_SHA256SUM_ETCD="dc5d82df095dae0a2970e4d870b6929590689dd707ae3d33e7b86da0f7f211b6"
+readonly DEFAULT_SHA1SUM_CRICTL="425d2b713cce726e3beecf9b3002111ffa06b6cb"
+readonly DEFAULT_DOCKER_VERSION="18.09"
 
 
 function print_usage {
@@ -92,6 +92,20 @@ function install_dependencies {
            rng-tools
       export VERSION=${DEFAULT_DOCKER_VERSION} && curl -sSL get.docker.com | sudo -E sh
       sudo usermod -aG docker centos
+      # Setup daemon.
+      sudo tee /etc/docker/daemon.json <<EOF
+{
+  "exec-opts": ["native.cgroupdriver=systemd"],
+  "log-driver": "json-file",
+  "log-opts": {
+    "max-size": "100m"
+  },
+  "storage-driver": "overlay2"
+}
+EOF
+
+      sudo mkdir -p /etc/systemd/system/docker.service.d
+
   elif [ -n "$(command -v apt-get)" ] && [ -n "$(command -v ubuntu-bug)" ]; then
       log_info "Ubuntu based. upgrading system and installing docker"
       echo "Debian based. upgrading system." >&2
@@ -104,6 +118,20 @@ function install_dependencies {
            rng-tools
       export VERSION=${DEFAULT_DOCKER_VERSION} && curl -sSL get.docker.com | sudo -E sh
       sudo usermod -aG docker ubuntu
+      # Setup daemon.
+      sudo tee /etc/docker/daemon.json <<EOF
+{
+  "exec-opts": ["native.cgroupdriver=systemd"],
+  "log-driver": "json-file",
+  "log-opts": {
+    "max-size": "100m"
+  },
+  "storage-driver": "overlay2"
+}
+EOF
+
+      sudo mkdir -p /etc/systemd/system/docker.service.d
+
   elif [ -n "$(command -v coreos-install)" ]; then
       log_info "Nothing to do for coreos"
   else

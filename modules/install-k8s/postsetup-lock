@@ -30,14 +30,20 @@ $ETCDCTL_COMMAND put "$CACRT_ETCD_KEY" "$(cat /etc/kubernetes/pki/ca.crt | base6
 
 echo "Setting admin user credentials in etcd" >&2
 user=${K8S_ADMIN_SA_USERNAME}
-$KUBECTL create sa "${user}"
+if ! $KUBECTL get sa "${user}"; then
+    $KUBECTL create sa "${user}"
+fi
+
 secret=$($KUBECTL get sa "${user}" -o json | jq -r '.secrets[].name')
 user_token=$($KUBECTL get secret "${secret}" -o json | jq -r '.data["token"]' | base64 -d)
 c=$($KUBECTL config current-context)
 cluster_name=$($KUBECTL config get-contexts $c | awk '{print $3}' | tail -n 1)
 endpoint=$($KUBECTL config view -o jsonpath="{.clusters[?(@.name == \"${cluster_name}\")].cluster.server}")
+
 echo "Grant cluster admin role to ${user}" >&2
-$KUBECTL create clusterrolebinding "${user}-cluster-admin-binding" --clusterrole=cluster-admin --user="system:serviceaccount:default:${user}"
+if ! $KUBECTL get clusterrolebinding "${user}-cluster-admin-binding"; then
+    $KUBECTL create clusterrolebinding "${user}-cluster-admin-binding" --clusterrole=cluster-admin --user="system:serviceaccount:default:${user}"
+fi
 
 echo "Putting admin sa username into etcd." >&2
 $ETCDCTL_COMMAND put "$K8S_ADMIN_SA_USERNAME_ETCD_KEY" "${user}"

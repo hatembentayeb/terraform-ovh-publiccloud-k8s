@@ -19,7 +19,7 @@ else
 fi
 
 cat <<EOF
-apiVersion: kubeadm.k8s.io/v1alpha3
+apiVersion: kubeadm.k8s.io/v1beta1
 kind: ClusterConfiguration
 kubernetesVersion: ${KUBERNETES_VERSION:-stable}
 certificatesDir: "/etc/kubernetes/pki"
