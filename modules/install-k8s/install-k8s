@@ -114,7 +114,7 @@ function install_dependencies {
   fi
 
   # Setup daemon.
-  sudo mkdir /etc/docker
+  sudo mkdir -p /etc/docker
   sudo tee /etc/docker/daemon.json <<EOF
 {
   "exec-opts": ["native.cgroupdriver=systemd"],
