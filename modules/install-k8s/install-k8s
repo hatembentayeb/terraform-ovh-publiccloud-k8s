@@ -103,8 +103,8 @@ function install_dependencies {
   "storage-driver": "overlay2"
 }
 EOF
-
       sudo mkdir -p /etc/systemd/system/docker.service.d
+      sudo systemctl restart docker
 
   elif [ -n "$(command -v apt-get)" ] && [ -n "$(command -v ubuntu-bug)" ]; then
       log_info "Ubuntu based. upgrading system and installing docker"
@@ -116,6 +116,7 @@ EOF
            socat \
            ebtables \
            rng-tools
+
       export VERSION=${DEFAULT_DOCKER_VERSION} && curl -sSL get.docker.com | sudo -E sh
       sudo usermod -aG docker ubuntu
       # Setup daemon.
@@ -129,8 +130,8 @@ EOF
   "storage-driver": "overlay2"
 }
 EOF
-
       sudo mkdir -p /etc/systemd/system/docker.service.d
+      sudo systemctl restart docker
 
   elif [ -n "$(command -v coreos-install)" ]; then
       log_info "Nothing to do for coreos"
