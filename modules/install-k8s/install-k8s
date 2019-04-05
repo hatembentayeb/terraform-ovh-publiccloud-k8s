@@ -90,22 +90,9 @@ function install_dependencies {
            systemd-resolved \
            ebtables \
            rng-tools
+
       export VERSION=${DEFAULT_DOCKER_VERSION} && curl -sSL get.docker.com | sudo -E sh
       sudo usermod -aG docker centos
-      # Setup daemon.
-      sudo tee /etc/docker/daemon.json <<EOF
-{
-  "exec-opts": ["native.cgroupdriver=systemd"],
-  "log-driver": "json-file",
-  "log-opts": {
-    "max-size": "100m"
-  },
-  "storage-driver": "overlay2"
-}
-EOF
-      sudo mkdir -p /etc/systemd/system/docker.service.d
-      sudo systemctl restart docker
-
   elif [ -n "$(command -v apt-get)" ] && [ -n "$(command -v ubuntu-bug)" ]; then
       log_info "Ubuntu based. upgrading system and installing docker"
       echo "Debian based. upgrading system." >&2
@@ -119,8 +106,16 @@ EOF
 
       export VERSION=${DEFAULT_DOCKER_VERSION} && curl -sSL get.docker.com | sudo -E sh
       sudo usermod -aG docker ubuntu
-      # Setup daemon.
-      sudo tee /etc/docker/daemon.json <<EOF
+  elif [ -n "$(command -v coreos-install)" ]; then
+      log_info "Nothing to do for coreos"
+  else
+      log_error "Could not find yum. Cannot install dependencies on this OS."
+      exit 1
+  fi
+
+  # Setup daemon.
+  sudo mkdir /etc/docker
+  sudo tee /etc/docker/daemon.json <<EOF
 {
   "exec-opts": ["native.cgroupdriver=systemd"],
   "log-driver": "json-file",
@@ -130,20 +125,12 @@ EOF
   "storage-driver": "overlay2"
 }
 EOF
-      sudo mkdir -p /etc/systemd/system/docker.service.d
-      sudo systemctl restart docker
-
-  elif [ -n "$(command -v coreos-install)" ]; then
-      log_info "Nothing to do for coreos"
-  else
-      log_error "Could not find yum. Cannot install dependencies on this OS."
-      exit 1
-  fi
+  sudo mkdir -p /etc/systemd/system/docker.service.d
+  sudo systemctl restart docker
 }
 
 function create_k8s_install_paths {
   local readonly path="$1"
-
   log_info "Creating install dirs for Kubernetes at $path"
   sudo mkdir -p "$path/bin"
   sudo echo "export PATH=\$PATH:$path/bin"  | sudo tee /etc/profile.d/k8s_path.sh > /dev/null
