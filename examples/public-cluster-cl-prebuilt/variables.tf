@@ -14,7 +14,7 @@ variable "image_name" {
 
 variable "image_tag" {
   description = "Image tag to use"
-  default     = "latest"
+  default     = ""
 }
 
 variable "name" {
