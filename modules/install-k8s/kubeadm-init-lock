@@ -66,7 +66,7 @@ if [ "$master_keys" == "missing" ]; then
     echo "Putting token into etcd." >&2
     # tokens are valid 24h. if scaling worker nodes after this delay
     # dont forget to regenerate a valid token before
-    $ETCDCTL_COMMAND put $BOOTSTRAP_TOKEN_ETCD_KEY "$(/opt/k8s/bin/kubeadm token list | tail -n1 | awk '{print $1}')"
+    $ETCDCTL_COMMAND put $BOOTSTRAP_TOKEN_ETCD_KEY "$(/opt/k8s/bin/kubeadm token list | awk '/authentication,signing.*system:bootstrappers:kubeadm/ {print $1}'| tail -n1)"
     echo "Putting cacrt sha256sum into etcd." >&2
     cacrtsum=$(openssl x509 -in /etc/kubernetes/pki/ca.crt -noout -pubkey | openssl rsa -pubin -outform DER 2>/dev/null | sha256sum | cut -d' ' -f1)
     $ETCDCTL_COMMAND put "$CACRT_SHA256SUM_ETCD_KEY" "sha256:$cacrtsum"
