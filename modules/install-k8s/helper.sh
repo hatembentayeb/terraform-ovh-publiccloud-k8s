@@ -11,3 +11,4 @@ CERTIFICATE_KEY=$($ETCDCTL_COMMAND get --print-value-only $CERTIFICATE_KEY_ETCD_
 CACRT_SHA256SUM=$($ETCDCTL_COMMAND get --print-value-only $CACRT_SHA256SUM_ETCD_KEY)
 MASTERS_ETCD_KEYPREFIX=k8s/masters
 masterip=$($ETCDCTL_COMMAND get --prefix "$MASTERS_ETCD_KEYPREFIX" --print-value-only --limit 1)
+JOIN=${masterip}:6443
