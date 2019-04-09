@@ -63,9 +63,9 @@ image_name=""
 if [ "$TARGET" == "coreos" ]; then
     image_name="CoreOS Stable - OVH Kubernetes"
 elif [ "$TARGET" == "ubuntu1604" ]; then
-    image_name="Ubuntu 16.04 - OVH Kubernetes"
+    image_name="OVH Kubernetes 16.04"
 elif [ "$TARGET" == "ubuntu1804" ]; then
-    image_name="Ubuntu 18.04 - OVH Kubernetes"
+    image_name="OVH Kubernetes 18.04"
 elif [ "$TARGET" == "centos7" ]; then
     image_name="Centos 7 - OVH Kubernetes"
 else

@@ -1,5 +1,5 @@
 provider "openstack" {
-  version = "~> 1.5.0"
+  version = "~> 1.11"
   region  = "${var.region}"
 }
 
@@ -19,7 +19,7 @@ module "k8s" {
   key_pair               = "${var.key_pair}"
   ssh_authorized_keys    = ["${file(var.public_sshkey == "" ? "/dev/null" : var.public_sshkey)}"]
   post_install_modules   = false
-  image_name             = "Ubuntu 16.04 K8s"
+  image_name             = "OVH Kubernetes 18.04"
   flavor_name            = "${var.flavor_name}"
   create_secgroups       = true
   ssh_user               = "ubuntu"
