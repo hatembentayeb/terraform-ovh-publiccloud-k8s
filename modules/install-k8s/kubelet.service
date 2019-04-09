@@ -22,6 +22,7 @@ Environment=TAINTS=
 EnvironmentFile=/etc/sysconfig/kubernetes.conf
 EnvironmentFile=-/var/run/instance.metadata.conf
 EnvironmentFile=-/var/run/instance.type.conf
+EnvironmentFile=-/var/lib/kubelet/kubeadm-flags.env
 
 # Disable swap
 ExecStartPre=-/sbin/swapoff -a
@@ -32,7 +33,7 @@ ExecStartPre=-/bin/sh -c 'echo INSTANCE_METADATA=`curl -s -f http://169.254.169.
 # Retrieve instance type from instance aws-like metadata to inject as a k8s node label
 ExecStartPre=-/bin/sh -c 'echo INSTANCE_TYPE=`curl -s -f http://169.254.169.254/latest/meta-data/instance-type` | tee /var/run/instance.type.conf'
 
-ExecStart=/opt/k8s/bin/kubelet --cgroup-driver=systemd \
+ExecStart=/opt/k8s/bin/kubelet $KUBELET_KUBEADM_ARGS \
   --address=${KUBELET_ADDRESS} \
   --bootstrap-kubeconfig=${KUBELET_BOOTSTRAP_CONFIG} \
   --kubeconfig=${KUBELET_CONFIG} \
