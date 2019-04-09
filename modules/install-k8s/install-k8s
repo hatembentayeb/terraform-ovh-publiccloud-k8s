@@ -89,6 +89,7 @@ function install_dependencies {
            systemd-networkd \
            systemd-resolved \
            ebtables \
+           conntrack \
            rng-tools
 
       export VERSION=${DEFAULT_DOCKER_VERSION} && curl -sSL get.docker.com | sudo -E sh
@@ -102,6 +103,7 @@ function install_dependencies {
            jq \
            socat \
            ebtables \
+           conntrack \
            rng-tools
 
       export VERSION=${DEFAULT_DOCKER_VERSION} && curl -sSL get.docker.com | sudo -E sh
