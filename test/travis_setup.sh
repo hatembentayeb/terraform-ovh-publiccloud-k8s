@@ -17,7 +17,7 @@ fi
 echo "install openstack & swift clis" >&2
 sudo pip install --upgrade setuptools
 sudo pip install --upgrade cryptography
-sudo pip install python-openstackclient==3.15.0
+sudo pip install python-openstackclient==3.18.0
 sudo pip install python-swiftclient==3.3.0
 
 echo "creating HOME/bin directory" >&2
